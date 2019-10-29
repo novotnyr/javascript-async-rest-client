@@ -7,20 +7,32 @@ function associate(albums, users) {
     return albums
 }
 
-function findUserByAlbumAsync(album) {
-    return fetch(`https://jsonplaceholder.typicode.com/users/${album.userId}`)
-        .then(response => response.json())
+async function findUserByAlbum(album) {
+    let response = await fetch(`https://jsonplaceholder.typicode.com/users/${album.userId}`);
+    return response.json()
 }
 
-function fetchUsersAsync(albums) {
-    let userPromises = albums.map(findUserByAlbumAsync);
-    return Promise.all(userPromises)
-        .then(users => associate(albums, users))
+async function fetchUsers(albums) {
+    let userPromises = albums.map(findUserByAlbum);
+    let users = await Promise.all(userPromises);
+    return associate(albums, users)
 }
 
-fetch('http://jsonplaceholder.typicode.com/albums')
-    .then(response => response.json())
-    .then(fetchUsersAsync)
-    .then(JSON.stringify)
-    .then(showResult)
-    .catch(showResult);
+async function findFullAlbums() {
+    let response = await fetch('https://jsonplaceholder.typicode.com/albums');
+    let albums = await response.json();
+    return fetchUsers(albums);
+}
+
+(async function () {
+    try {
+        let fullAlbums = await findFullAlbums();
+        let json = JSON.stringify(fullAlbums);
+        showResult(json);
+    } catch (e) {
+        showResult(e)
+    }
+})();
+
+
+
