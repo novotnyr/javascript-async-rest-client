@@ -3,4 +3,4 @@ function showResult(response) {
 }
 
 fetch('http://jsonplaceholder.typicode.com/albums')
-    .then(response => showResult(response.statusText));
+    .then(response => showResult(response.statusText), err => showResult(err));
