@@ -4,5 +4,6 @@ function showResult(response) {
 
 fetch('http://jsonplaceholder.typicode.com/albums')
     .then(response => response.json())
-    .then(albums => showResult(JSON.stringify(albums)))
+    .then(JSON.stringify)
+    .then(showResult)
     .catch(showResult);
